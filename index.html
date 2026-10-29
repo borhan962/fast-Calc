@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Dual-Number Calculator & History Slider</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark">
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+            <line x1="8" y1="6" x2="16" y2="6"></line>
+            <line x1="16" y1="14" x2="16" y2="18"></line>
+            <path d="M16 10h.01"></path>
+            <path d="M12 10h.01"></path>
+            <path d="M8 10h.01"></path>
+            <path d="M12 14h.01"></path>
+            <path d="M8 14h.01"></path>
+            <path d="M12 18h.01"></path>
+            <path d="M8 18h.01"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="app-title">CalcSlider</h1>
+          <p class="app-subtitle">Two-Number Calculator with History Slider & Batch Addition</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="icon-btn" title="Toggle Theme" aria-label="Toggle dark/light theme">
+          <span class="theme-icon light-icon">☀️</span>
+          <span class="theme-icon dark-icon">🌙</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- Calculator Card -->
+      <section class="calculator-card glass-panel">
+        <div class="card-header">
+          <span class="badge">Operation Center</span>
+          <span class="hint-text">Select 2 numbers & choose an operation</span>
+        </div>
+
+        <form id="calcForm" onsubmit="return false;">
+          <div class="inputs-grid">
+            <!-- Number 1 -->
+            <div class="input-group">
+              <label for="num1">First Number</label>
+              <div class="input-wrapper">
+                <input type="number" id="num1" step="any" placeholder="Enter number..." required autocomplete="off">
+                <button type="button" class="quick-clear-btn" data-target="num1" title="Clear field">×</button>
+              </div>
+            </div>
+
+            <!-- Operator Selector -->
+            <div class="operator-section">
+              <label>Select Operation</label>
+              <div class="operator-grid" id="operatorGrid" role="radiogroup" aria-label="Math Operators">
+                <button type="button" class="op-btn active" data-op="+" aria-checked="true" role="radio" title="Addition (+)">
+                  <span class="op-symbol">+</span>
+                  <span class="op-name">Add</span>
+                </button>
+                <button type="button" class="op-btn" data-op="-" aria-checked="false" role="radio" title="Subtraction (-)">
+                  <span class="op-symbol">−</span>
+                  <span class="op-name">Subtract</span>
+                </button>
+                <button type="button" class="op-btn" data-op="*" aria-checked="false" role="radio" title="Multiplication (×)">
+                  <span class="op-symbol">×</span>
+                  <span class="op-name">Multiply</span>
+                </button>
+                <button type="button" class="op-btn" data-op="/" aria-checked="false" role="radio" title="Division (÷)">
+                  <span class="op-symbol">÷</span>
+                  <span class="op-name">Divide</span>
+                </button>
+                <button type="button" class="op-btn" data-op="%" aria-checked="false" role="radio" title="Modulus (%)">
+                  <span class="op-symbol">%</span>
+                  <span class="op-name">Modulo</span>
+                </button>
+                <button type="button" class="op-btn" data-op="^" aria-checked="false" role="radio" title="Power (^)">
+                  <span class="op-symbol">xʸ</span>
+                  <span class="op-name">Power</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Number 2 -->
+            <div class="input-group">
+              <label for="num2">Second Number</label>
+              <div class="input-wrapper">
+                <input type="number" id="num2" step="any" placeholder="Enter number..." required autocomplete="off">
+                <button type="button" class="quick-clear-btn" data-target="num2" title="Clear field">×</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="form-actions">
+            <button type="submit" id="calculateBtn" class="primary-btn pulse-glow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+              Calculate & Add to History
+            </button>
+            <button type="button" id="swapInputsBtn" class="secondary-btn" title="Swap Number 1 and Number 2">
+              ⇄ Swap
+            </button>
+            <button type="button" id="resetInputsBtn" class="secondary-btn" title="Reset Inputs">
+              ↺ Reset
+            </button>
+          </div>
+        </form>
+
+        <!-- Current Result Display -->
+        <div class="current-result-container" id="currentResultBox">
+          <div class="result-label">Latest Result</div>
+          <div class="result-formula" id="formulaPreview">Awaiting calculation...</div>
+          <div class="result-value-row">
+            <span class="result-value" id="currentResultValue">—</span>
+            <button id="copyResultBtn" class="icon-btn small-btn" title="Copy result to clipboard" style="display:none;">
+              📋 Copy
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- History Slider Section -->
+      <section class="history-slider-section glass-panel">
+        <div class="section-top-bar">
+          <div class="section-title-wrap">
+            <h2 class="section-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              Calculation History Slider
+            </h2>
+            <span class="history-badge" id="historyCounterBadge">0 results saved</span>
+          </div>
+
+          <div class="slider-nav-controls">
+            <button id="slidePrevBtn" class="nav-arrow-btn" aria-label="Previous Slide" title="Scroll left">‹</button>
+            <button id="slideNextBtn" class="nav-arrow-btn" aria-label="Next Slide" title="Scroll right">›</button>
+            <button id="clearHistoryBtn" class="danger-btn small-btn" title="Clear all saved history">Clear All</button>
+          </div>
+        </div>
+
+        <!-- Slider Scrubber Bar -->
+        <div class="scrubber-bar-container" id="scrubberContainer" style="display: none;">
+          <span class="scrub-label">Timeline Slider:</span>
+          <input type="range" id="historyScrubber" min="0" max="0" value="0" step="1">
+          <span id="scrubIndexLabel" class="scrub-indicator">1 / 1</span>
+        </div>
+
+        <!-- Horizontal Scroll / Slider Viewport -->
+        <div class="slider-viewport" id="sliderViewport">
+          <div class="slider-track" id="sliderTrack">
+            <!-- Empty state fallback -->
+            <div class="empty-state" id="emptyState">
+              <div class="empty-icon">📊</div>
+              <p class="empty-title">No calculations in history yet</p>
+              <p class="empty-desc">Perform a calculation above to add cards to this history slider!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Sum from History Action (Key Requirement) -->
+        <div class="final-sum-bar">
+          <div class="sum-bar-info">
+            <span class="sum-bar-title">Aggregate Results Engine</span>
+            <p class="sum-bar-desc">Collect all saved results from the history slider and add them together.</p>
+          </div>
+          <button id="sumAllResultsBtn" class="sum-action-btn">
+            <span class="sum-symbol">Σ</span>
+            <span>Add All Results From History</span>
+          </button>
+        </div>
+
+        <!-- Final Addition Result Box (Collapsible / Dynamic) -->
+        <div class="final-result-card" id="finalResultCard" style="display: none;">
+          <div class="final-result-header">
+            <div class="final-result-title">
+              <span class="pill-badge">History Addition Complete</span>
+              <h3>Grand Sum of All History Results</h3>
+            </div>
+            <button id="closeFinalResultBtn" class="icon-btn small-btn" title="Dismiss">✕</button>
+          </div>
+
+          <div class="final-sum-breakdown">
+            <div class="breakdown-label">Summation Formula (All Results Added):</div>
+            <div class="breakdown-formula" id="sumBreakdownFormula">0 = 0</div>
+          </div>
+
+          <div class="final-grand-display">
+            <span class="grand-label">Final Sum Result:</span>
+            <span class="grand-number" id="finalSumValue">0</span>
+          </div>
+
+          <div class="stats-pills-row">
+            <div class="stat-pill">
+              <span class="stat-pill-label">Total Items</span>
+              <span class="stat-pill-value" id="statCount">0</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-pill-label">Average</span>
+              <span class="stat-pill-value" id="statAvg">0</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-pill-label">Minimum</span>
+              <span class="stat-pill-value" id="statMin">0</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-pill-label">Maximum</span>
+              <span class="stat-pill-value" id="statMax">0</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Dual-Number Calculator &bull; History Slider &bull; Batch Addition</p>
+    </footer>
+  </div>
+
+  <!-- Toast notification element -->
+  <div id="toast" class="toast" role="alert"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
